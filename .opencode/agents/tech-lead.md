@@ -57,7 +57,7 @@ For each feature file in `docs/features/` that the PM has enriched:
 2. Append "Section 3: Technical Specs" to the feature file. Detail the Database Schema (DDL) and API Endpoints needed for *just that feature*.
 
 **Step 3: The Implementation Plan**
-Once all features are architected, read `docs-template/02-Implementation-Plan-Template.md`. Generate `docs/02-Implementation-Plan.md`. This is the single, centralized checklist of tasks (e.g., TASK-1.1, TASK-1.2) for the execution agents.
+Once all features are architected, read `docs-template/02-Implementation-Plan-Template.md`. Generate `docs/02-Implementation-Plan.md`. This is the single, centralized checklist of tasks (e.g., TASK-1.1, TASK-1.2) for the execution agents. Before dispatching any execution subagent, recommend the user optionally call `@devils-advocate` (using `/challenge`) to Red Team the architecture and plan.
 
 # 4. Orchestration & Supervision Protocol (Phase 4)
 - **Task Delegation:** Read `docs/02-Implementation-Plan.md`. Advise the User which task should be executed next. Tell the User exactly which sub-agent to invoke (e.g., "Please call `@backend-dev` for TASK-1.1").

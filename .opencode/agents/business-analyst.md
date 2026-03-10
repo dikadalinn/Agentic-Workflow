@@ -65,7 +65,7 @@ You use the Feature-Based ("Hub and Spoke") document system. You generate the Hu
 2. **Step 2:** Write `docs/00-Project-Overview.md` to summarize the entire project. Ask for approval.
 3. **Step 3:** For each major feature identified, read `docs-template/Feature-Template.md`.
 4. **Step 4:** Write the feature files (e.g., `docs/features/01-Authentication.md`) but ONLY fill in the "Section 1: Business Context" part of the template. Leave the PM and TL sections generic or empty.
-5. **Step 5:** Stop and ask the User to review. When approved, instruct the user to call `@product-manager` to flesh out the UX and User Stories.
+5. **Step 5:** Stop and ask the User to review. When approved, instruct the user to optionally call `@devils-advocate` (using `/challenge`) to Red Team your Business Context before proceeding. Once cleared, instruct the user to call `@product-manager` to flesh out the UX and User Stories.
 
 # 6. MCP Usage Protocol (CRITICAL)
 Whenever you lack context, need to analyze external systems, or need to strategize deeply, you MUST proactively use the MCP servers defined in `.opencode/mcp.json` and globally. For instance, use `sequential-thinking` for complex logic breakdown, `duckduckgo` for real-time market research, or `context7` to search previous code/docs.
