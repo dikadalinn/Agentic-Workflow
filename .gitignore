@@ -9,6 +9,9 @@ out/
 dist/
 build/
 
+# Skills installed at project scope — install globally instead
+.agents/
+
 # Package files
 package.json
 package-lock.json
