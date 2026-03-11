@@ -1,61 +1,193 @@
-# Agentic Workflow Factory 🤖
+# 🤖 Agentic Workflow Factory
 
-A robust, 4-phase **Hub-and-Spoke** agentic workflow for [Opencode](https://opencode.ai/). This system uses specialized AI agents to autonomously translate raw business requirements (meeting notes, briefs) into fully tested, production-ready code.
+> A production-ready, 4-phase **Hub-and-Spoke agentic workflow** for [Opencode](https://opencode.ai/).  
+> Designed by **Enigma Ventures** to autonomously translate raw client briefs into fully-documented, test-ready software features.
 
-## 🌟 The 4-Phase Relay Race
+---
 
-This workflow utilizes a strict chain of command to prevent context bloat and ensure high-quality software architecture:
+## ✨ What This Is
 
-1. **Phase 1: Business Context (`@business-analyst`)**
-   - Ingests rough notes or project briefs.
-   - Socratic interrogation to ensure business goals are clear.
-   - Scaffolds the `00-Project-Overview.md` and creates Hub-and-Spoke feature templates.
-2. **Phase 2: Product Context (`@product-manager`)**
-   - Translates business needs into User Stories and UI/UX Design rules.
-3. **Phase 3: Tech Context (`@tech-lead`)**
-   - The CTO. Defines the global architecture (`01-Architecture-And-Rules.md`).
-   - Translates UI/UX into Database Schemas and APIs.
-   - Generates the step-by-step `02-Implementation-Plan.md`.
-4. **Phase 4: Execution Phase**
-   - Directed by the Tech Lead.
-   - `@frontend-dev`: Builds the UI using `magic`, `figma`, and modern frontend stacks.
-   - `@backend-dev`: Builds APIs and db migrations (using `supabase`).
-   - `@qa-engineer`: Conducts isolated testing using `chrome-devtools` and `playwright`.
+This repository is a **reusable project template** for AI-assisted software development. Clone it as the foundation of any new project to instantly get a structured team of specialized AI agents that collaborate across 4 clearly defined phases — complete with built-in quality gates, session memory, and automated document scaffolding.
+
+---
+
+## 🔄 The 4-Phase Relay Race
+
+Each phase is handled by a specialized agent. They pass context forward through a shared document system, never stepping on each other's toes.
+
+| Phase | Agent | Responsibility |
+|---|---|---|
+| **1 — Business Context** | `@business-analyst` | Interrogates client briefs → creates Project Overview & Feature skeletons |
+| **2 — Product Context** | `@product-manager` | Enriches features with User Stories & UI/UX design intent |
+| **3 — Technical Context** | `@tech-lead` | Adds architecture rules, DB schemas, API specs & Implementation Plan |
+| **4 — Execution** | `@frontend-dev` `@backend-dev` `@qa-engineer` | Executes tasks from the Implementation Plan |
+
+> 🔴 **At any phase boundary**, optionally call `@devils-advocate` via `/challenge` to Red Team the output before proceeding.
+
+---
+
+## 🔴 The Devil's Advocate
+
+A dedicated **Red Team agent** that challenges assumptions across all phases. It issues a structured **Red Team Report** with:
+- Hard Blockers (must resolve before proceeding)
+- Assumptions Under Fire
+- Blindspots Detected
+- Counterproposals
+- **Confidence Score** (out of 100)
+
+Invoke it at any point with `/challenge`.
+
+---
+
+## ⚡ Slash Commands
+
+| Command | When | What it does |
+|---|---|---|
+| `/kickoff` | After dropping a brief into `docs/moms/` | Summons `@business-analyst` to scaffold all project docs |
+| `/architect` | After PM finishes UX enrichment | Summons `@tech-lead` to generate architecture + Implementation Plan |
+| `/challenge` | At any phase gate | Summons `@devils-advocate` to Red Team the current phase output |
+| `/test-task` | During execution phase | Runs focused QA on a single specific task (requires Task ID) |
+| `/check-out` | Before closing the session | Saves session context to `docs/_inbox/session-state.md` |
+| `/check-in` | At the start of a new session | Loads saved context so agents resume exactly where you left off |
+
+---
 
 ## 🛠 Prerequisites
 
-To use this workflow, you need Opencode installed globally along with a specific set of **Model Context Protocol (MCP)** servers.
-
-Your global `~/.config/opencode/opencode.json` should have the following MCPs configured:
-- `context7`
-- `playwright`
-- `chrome-devtools`
-- `sequential-thinking`
-- `github` (Local via `@modelcontextprotocol/server-github`)
-- `supabase`
-- `duckduckgo`
-- `figma`
-- `magic`
-
-**Environment Variables Required:**
-If using the local Github MCP for the Tech Lead to read/write PRs, ensure you have set your Github Token in your shell:
+### 1. Install Opencode
 ```bash
-export GITHUB_PERSONAL_ACCESS_TOKEN="your_token_here"
+npm install -g opencode-ai
 ```
 
-## ⚡ Custom Commands (Workflows)
+### 2. Configure Global MCPs
 
-We have engineered 5 custom `/slash` commands into this repository to entirely automate the tedious parts of prompting the agents:
+Add the following to your `~/.config/opencode/opencode.json`:
 
-* **`/kickoff`**: Run this immediately after placing a client brief into `docs/moms/`. It summons the Business Analyst to automatically scaffold the project files.
-* **`/architect`**: Run this after the Product Manager finishes UX. It summons the Tech Lead to automatically generate all technical specs and the Developer Implementation Plan checklist.
-* **`/test-task`**: Performs laser-focused QA. Prompts you for a specific Task ID from the plan, and only tests that feature without wasting tokens reading the rest of the app.
-* **`/check-out`**: Run this before going to sleep or closing the chat window. It condenses the entire context window into a dense memory file (`.opencode/memory/session-state.md`).
-* **`/check-in`**: Run this when opening a brand new chat window. It instantly loads the saved memory so the agent resumes exactly from where it left off, saving massive token context.
+| MCP Key | Purpose | Type |
+|---|---|---|
+| `context7` | Documentation & code retrieval | Remote (API key required) |
+| `sequential-thinking` | Deep reasoning chains | `npx @modelcontextprotocol/server-sequential-thinking` |
+| `duckduckgo` | Real-time web search | `uvx duckduckgo-mcp-server` |
+| `playwright` | Browser automation for QA | `npx @playwright/mcp@latest` |
+| `chrome-devtools` | DOM inspection for QA | `npx chrome-devtools-mcp@latest` |
+| `github` | PR / repo management | `npx @modelcontextprotocol/server-github` |
+| `supabase` | Database management | Remote |
+| `figma` | Design reference reading | Figma desktop app (runs on `localhost:3845`) |
+| `magic` | UI component generation | `npx @21st-dev/magic@latest` (API key required) |
+
+### 3. Required Environment Variables
+```bash
+export GITHUB_PERSONAL_ACCESS_TOKEN="ghp_your_token_here"
+export CONTEXT7_API_KEY="your_key_here"
+```
+
+### 4. Install Global Skills
+
+Skills are stored in `~/.agents/skills/`. Install community skills via [skills.sh](https://skills.sh):
+
+```bash
+# Redis patterns (from Redis official)
+npx skills add redis/agent-skills
+
+# Meta-skill: helps agents discover new skills
+npx skills add vercel-labs/skills
+```
+
+Then **manually copy** the 6 custom skills from this repo's `skills/` folder to your global skills directory:
+
+```bash
+cp -r skills/socratic-interrogation ~/.agents/skills/
+cp -r skills/go-toolkit-architecture ~/.agents/skills/
+cp -r skills/dynamic-api-patterns     ~/.agents/skills/
+cp -r skills/modern-ui-implementation ~/.agents/skills/
+cp -r skills/deep-code-auditing       ~/.agents/skills/
+cp -r skills/go-conventions           ~/.agents/skills/
+```
+
+---
 
 ## 🚀 Getting Started
 
-1. Clone this repository to use as the base `docs` and `.opencode` folder for your new coding project.
-2. Drop your first client brief, meeting notes, or raw ideas into the `docs/moms/` directory as a text file.
-3. Open the Opencode chat interface inside this repo.
-4. Type `/kickoff` and hit Enter to start the magic!
+```bash
+# 1. Clone this repo into your new project directory
+git clone https://github.com/dikadalinn/Agentic-Workflow.git my-new-project
+cd my-new-project
+
+# 2. Drop your client brief or meeting notes into docs/moms/
+# (any .md or .txt file works)
+
+# 3. Open Opencode in the project folder
+opencode
+
+# 4. Type /kickoff and hit Enter
+```
+
+The `@business-analyst` will automatically read your brief and begin Phase 1.
+
+---
+
+## 📁 Repository Structure
+
+```
+.opencode/
+├── agents/
+│   ├── business-analyst.md     # Phase 1 — Business Context
+│   ├── product-manager.md      # Phase 2 — Product & UX
+│   ├── tech-lead.md            # Phase 3 — Architecture & Plan
+│   ├── devils-advocate.md      # Quality Gate — Red Teaming
+│   └── subagent/
+│       ├── backend-dev.md      # Phase 4 — Backend execution
+│       ├── frontend-dev.md     # Phase 4 — Frontend execution
+│       └── qa-engineer.md      # Phase 4 — Testing & QA
+├── commands/
+│   ├── kickoff.md              # /kickoff command
+│   ├── architect.md            # /architect command
+│   ├── challenge.md            # /challenge command
+│   ├── test-task.md            # /test-task command
+│   ├── check-in.md             # /check-in command
+│   └── check-out.md            # /check-out command
+└── memory/
+    └── session-state.md        # Session memory template
+
+skills/                         # Custom SKILL.md definitions
+├── socratic-interrogation/     # Requirements interrogation technique
+├── go-toolkit-architecture/    # Go project scaffolding & clean arch
+├── dynamic-api-patterns/       # RESTful API design patterns
+├── modern-ui-implementation/   # Premium React UI patterns
+├── deep-code-auditing/         # 5-layer code audit framework
+└── go-conventions/             # Idiomatic Go code conventions
+
+docs-template/                  # Document scaffolding templates
+├── 00-Project-Overview-Template.md
+├── Feature-Template.md
+├── 01-Architecture-Template.md
+└── 02-Implementation-Plan-Template.md
+
+docs/                           # Generated during workflow (gitignored content)
+├── moms/                       # Drop your briefs/meeting notes here
+├── features/                   # Auto-generated feature specs
+├── red-team/                   # Red Team report outputs
+└── _inbox/                     # Session memory & scratchpads
+```
+
+---
+
+## 🧠 Agent Skills Map
+
+Each agent is pre-loaded with only the skills relevant to its role — no overlap, no redundancy.
+
+| Agent | Key Skills |
+|---|---|
+| `@business-analyst` | `socratic-interrogation`, `brainstorming`, `writing-plans`, `writing-skills` |
+| `@product-manager` | `ui-ux-pro-max`, `frontend-design`, `doc-coauthoring`, `writing-skills` |
+| `@tech-lead` | `architecture-patterns`, `api-design-principles`, `dispatching-parallel-agents`, `using-git-worktrees` |
+| `@devils-advocate` | `socratic-interrogation`, `systematic-debugging`, `architecture-patterns`, `find-skills` |
+| `@backend-dev` | `go-toolkit-architecture`, `go-conventions`, `dynamic-api-patterns`, `redis-development` |
+| `@frontend-dev` | `modern-ui-implementation`, `vercel-react-best-practices`, `canvas-design` |
+| `@qa-engineer` | `deep-code-auditing`, `webapp-testing`, `test-driven-development` |
+
+---
+
+## 📄 License
+
+MIT — use freely, adapt for your own workflow.
