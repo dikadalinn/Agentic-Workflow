@@ -83,26 +83,40 @@ export CONTEXT7_API_KEY="your_key_here"
 
 ### 4. Install Global Skills
 
-Skills are stored in `~/.agents/skills/`. Install community skills via [skills.sh](https://skills.sh):
+Skills are installed via the **skills.sh CLI** and stored globally in `~/.agents/skills/`.
 
+### Step 1 — Install the skills.sh CLI
+No installation needed — run it directly with `npx`:
 ```bash
-# Redis patterns (from Redis official)
-npx skills add redis/agent-skills
-
-# Meta-skill: helps agents discover new skills
-npx skills add vercel-labs/skills
+npx skills add <owner>/<repo>
 ```
 
-Then **manually copy** the 6 custom skills from this repo's `skills/` folder to your global skills directory:
-
+### Step 2 — Install custom skills from this repo
+This installs all 7 custom skills defined in the `skills/` folder:
 ```bash
-cp -r skills/socratic-interrogation ~/.agents/skills/
-cp -r skills/go-toolkit-architecture ~/.agents/skills/
-cp -r skills/dynamic-api-patterns     ~/.agents/skills/
-cp -r skills/modern-ui-implementation ~/.agents/skills/
-cp -r skills/deep-code-auditing       ~/.agents/skills/
-cp -r skills/go-conventions           ~/.agents/skills/
+npx skills add dikadalinn/Agentic-Workflow
 ```
+
+### Step 3 — Install community skills from [skills.sh](https://skills.sh)
+```bash
+npx skills add redis/agent-skills     # redis-development (511 installs ⭐)
+npx skills add vercel-labs/skills     # find-skills — helps agents discover skills
+```
+
+### Recommended Skills Reference
+
+| Skill | Source | Used By | Purpose |
+|---|---|---|---|
+| `socratic-interrogation` | This repo | `@business-analyst`, `@devils-advocate` | 5-layer requirements interrogation |
+| `go-toolkit-architecture` | This repo | `@backend-dev` | Go clean architecture scaffolding |
+| `dynamic-api-patterns` | This repo | `@backend-dev` | RESTful API design, pagination, auth |
+| `modern-ui-implementation` | This repo | `@frontend-dev` | Premium React UI — 4 states, a11y, animations |
+| `deep-code-auditing` | This repo | `@qa-engineer` | 5-layer code audit & bug reporting |
+| `go-conventions` | This repo | `@backend-dev` | Idiomatic Go — errors, concurrency, naming |
+| `redis-development` | [redis/agent-skills](https://skills.sh/redis/agent-skills) | `@backend-dev` | Redis data structures, caching, vector search |
+| `find-skills` | [vercel-labs/skills](https://skills.sh/vercel-labs/skills) | `@tech-lead`, `@devils-advocate` | Agent self-discovery of new skills |
+
+> **Note:** Additional global skills like `architecture-patterns`, `ui-ux-pro-max`, `vercel-react-best-practices`, etc. are assumed to already be in your `~/.agents/skills/` from a standard Opencode setup. Browse the full leaderboard at [skills.sh](https://skills.sh) to find and install any missing ones.
 
 ---
 
