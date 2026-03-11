@@ -7,6 +7,8 @@ skills:
   - brainstorming
   - doc-coauthoring
   - writing-plans
+  - writing-skills
+  - using-superpowers
 tools:
   read: true
   write: true
@@ -23,6 +25,8 @@ permissions:
     "brainstorming": allow
     "doc-coauthoring": allow
     "writing-plans": allow
+    "writing-skills": allow
+    "using-superpowers": allow
   mcp:
     "*": deny
     "duckduckgo": allow

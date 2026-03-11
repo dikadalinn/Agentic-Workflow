@@ -6,6 +6,7 @@ skills:
   - ui-ux-pro-max
   - doc-coauthoring
   - frontend-design
+  - writing-skills
 tools:
   read: true
   write: true
@@ -27,6 +28,7 @@ permissions:
     "ui-ux-pro-max": allow
     "doc-coauthoring": allow
     "frontend-design": allow
+    "writing-skills": allow
 ---
 
 # 1. Role & Persona

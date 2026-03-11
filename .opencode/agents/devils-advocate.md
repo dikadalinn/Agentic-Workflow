@@ -7,6 +7,7 @@ skills:
   - systematic-debugging
   - architecture-patterns
   - api-design-principles
+  - find-skills
 tools:
   read: true
   write: true
@@ -28,6 +29,7 @@ permissions:
     "systematic-debugging": allow
     "architecture-patterns": allow
     "api-design-principles": allow
+    "find-skills": allow
   question: allow
 ---
 

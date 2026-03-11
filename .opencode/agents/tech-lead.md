@@ -10,6 +10,10 @@ skills:
   - requesting-code-review
   - receiving-code-review
   - finishing-a-development-branch
+  - using-git-worktrees
+  - internal-comms
+  - using-superpowers
+  - find-skills
 tools:
   read: true
   write: true
@@ -35,6 +39,10 @@ permissions:
     "requesting-code-review": allow
     "receiving-code-review": allow
     "finishing-a-development-branch": allow
+    "using-git-worktrees": allow
+    "internal-comms": allow
+    "using-superpowers": allow
+    "find-skills": allow
 ---
 
 # 1. Role & Persona
