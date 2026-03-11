@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import type { OverlayStore, OverlaySettings } from '@/types/overlay'
 
 // Default configurations for each overlay type
@@ -13,7 +14,7 @@ const createDefaultAlertSettings = (streamerId: string): OverlaySettings => ({
       animationStyle: 'pulse',
       soundEnabled: true,
       duration: 5,
-      customMessage: 'Thank you for the donation, {username}!',
+      customMessage: 'Thank you for donation, {username}!',
     },
   },
   isActive: true,
@@ -71,109 +72,116 @@ const createDefaultCustomSettings = (streamerId: string): OverlaySettings => ({
   updatedAt: new Date(),
 })
 
-export const useOverlayStore = create<OverlayStore>((set, get) => ({
-  // State
-  alertSettings: null,
-  playerSettings: null,
-  leaderboardSettings: null,
-  customSettings: null,
-  previewOverlay: null,
-  testAlertTriggered: false,
+export const useOverlayStore = create<OverlayStore>()(
+  persist(
+    (set, get) => ({
+      // State
+      alertSettings: null,
+      playerSettings: null,
+      leaderboardSettings: null,
+      customSettings: null,
+      previewOverlay: null,
+      testAlertTriggered: false,
 
-  // Actions
-  setAlertSettings: (settings: OverlaySettings) => {
-    set({ alertSettings: settings })
-  },
+      // Actions
+      setAlertSettings: (settings: OverlaySettings) => {
+        set({ alertSettings: settings })
+      },
 
-  setPlayerSettings: (settings: OverlaySettings) => {
-    set({ playerSettings: settings })
-  },
+      setPlayerSettings: (settings: OverlaySettings) => {
+        set({ playerSettings: settings })
+      },
 
-  setLeaderboardSettings: (settings: OverlaySettings) => {
-    set({ leaderboardSettings: settings })
-  },
+      setLeaderboardSettings: (settings: OverlaySettings) => {
+        set({ leaderboardSettings: settings })
+      },
 
-  setCustomSettings: (settings: OverlaySettings) => {
-    set({ customSettings: settings })
-  },
+      setCustomSettings: (settings: OverlaySettings) => {
+        set({ customSettings: settings })
+      },
 
-  setPreviewOverlay: (overlay: OverlaySettings) => {
-    set({ previewOverlay: overlay })
-  },
+      setPreviewOverlay: (overlay: OverlaySettings) => {
+        set({ previewOverlay: overlay })
+      },
 
-  triggerTestAlert: () => {
-    set({ testAlertTriggered: true })
-    // Auto-clear after 5 seconds
-    setTimeout(() => {
-      set({ testAlertTriggered: false })
-    }, 5000)
-  },
+      triggerTestAlert: () => {
+        set({ testAlertTriggered: true })
+        // Auto-clear after 5 seconds
+        setTimeout(() => {
+          set({ testAlertTriggered: false })
+        }, 5000)
+      },
 
-  clearTestAlert: () => {
-    set({ testAlertTriggered: false })
-  },
+      clearTestAlert: () => {
+        set({ testAlertTriggered: false })
+      },
 
-  updateOverlay: (type, updates) => {
-    const state = get()
-    let settings: OverlaySettings | null = null
+      updateOverlay: (type, updates) => {
+        const state = get()
+        let settings: OverlaySettings | null = null
 
-    switch (type) {
-      case 'alert':
-        settings = state.alertSettings
-        break
-      case 'player':
-        settings = state.playerSettings
-        break
-      case 'leaderboard':
-        settings = state.leaderboardSettings
-        break
-      case 'custom':
-        settings = state.customSettings
-        break
+        switch (type) {
+          case 'alert':
+            settings = state.alertSettings
+            break
+          case 'player':
+            settings = state.playerSettings
+            break
+          case 'leaderboard':
+            settings = state.leaderboardSettings
+            break
+          case 'custom':
+            settings = state.customSettings
+            break
+        }
+
+        if (settings) {
+          const updatedSettings = {
+            ...settings,
+            ...updates,
+            updatedAt: new Date(),
+          }
+
+          switch (type) {
+            case 'alert':
+              set({ alertSettings: updatedSettings })
+              break
+            case 'player':
+              set({ playerSettings: updatedSettings })
+              break
+            case 'leaderboard':
+              set({ leaderboardSettings: updatedSettings })
+              break
+            case 'custom':
+              set({ customSettings: updatedSettings })
+              break
+          }
+        }
+      },
+    }),
+    {
+      name: 'overlay-storage',
     }
+  )
+)
 
-    if (settings) {
-      const updatedSettings = {
-        ...settings,
-        ...updates,
-        updatedAt: new Date(),
-      }
+// Helper function to initialize default settings
+export function initializeOverlaySettings(streamerId: string) {
+  const store = useOverlayStore.getState()
 
-      switch (type) {
-        case 'alert':
-          set({ alertSettings: updatedSettings })
-          break
-        case 'player':
-          set({ playerSettings: updatedSettings })
-          break
-        case 'leaderboard':
-          set({ leaderboardSettings: updatedSettings })
-          break
-        case 'custom':
-          set({ customSettings: updatedSettings })
-          break
-      }
-    }
-  },
+  if (!store.alertSettings) {
+    store.setAlertSettings(createDefaultAlertSettings(streamerId))
+  }
 
-  // Helper to initialize default settings
-  initializeSettings: (streamerId: string) => {
-    const state = get()
+  if (!store.playerSettings) {
+    store.setPlayerSettings(createDefaultPlayerSettings(streamerId))
+  }
 
-    if (!state.alertSettings) {
-      set({ alertSettings: createDefaultAlertSettings(streamerId) })
-    }
+  if (!store.leaderboardSettings) {
+    store.setLeaderboardSettings(createDefaultLeaderboardSettings(streamerId))
+  }
 
-    if (!state.playerSettings) {
-      set({ playerSettings: createDefaultPlayerSettings(streamerId) })
-    }
-
-    if (!state.leaderboardSettings) {
-      set({ leaderboardSettings: createDefaultLeaderboardSettings(streamerId) })
-    }
-
-    if (!state.customSettings) {
-      set({ customSettings: createDefaultCustomSettings(streamerId) })
-    }
-  },
-}))
+  if (!store.customSettings) {
+    store.setCustomSettings(createDefaultCustomSettings(streamerId))
+  }
+}

@@ -1,19 +1,21 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { QueueItem } from '@/types'
+import type { QueuedSong, PlayerState, PlayerActions, PlayerStore } from '@/types/player'
 
 interface QueueState {
-  queue: QueueItem[]
+  songs: QueuedSong[]
+  isLoading: boolean
+  sortMode: 'fifo' | 'highest_first'
 }
 
 interface QueueActions {
-  addToQueue: (item: QueueItem) => void
-  removeFromQueue: (id: string) => void
-  reorderQueue: (fromIndex: number, toIndex: number) => void
+  addSong: (song: QueuedSong) => void
+  removeSong: (id: string) => void
+  reorderSongs: (fromIndex: number, toIndex: number) => void
+  playNext: (id: string) => void
   clearQueue: () => void
-  updateQueueStatus: (id: string, status: QueueItem['status']) => void
-  sortQueue: (sortBy: 'fifo' | 'highest_first') => void
-  playNext: () => QueueItem | null
+  setSortMode: (mode: 'fifo' | 'highest_first') => void
+  setSongs: (songs: QueuedSong[]) => void
 }
 
 export type QueueStore = QueueState & QueueActions
@@ -21,64 +23,66 @@ export type QueueStore = QueueState & QueueActions
 export const useQueueStore = create<QueueStore>()(
   persist(
     (set, get) => ({
-      // State
-      queue: [],
+      songs: [],
+      isLoading: false,
+      sortMode: 'fifo',
 
-      // Actions
-      addToQueue: (item) => {
-        set((state) => ({
-          queue: [...state.queue, item],
-        }))
-      },
-
-      removeFromQueue: (id) => {
-        set((state) => ({
-          queue: state.queue.filter((item) => item.id !== id),
-        }))
-      },
-
-      reorderQueue: (fromIndex, toIndex) => {
+      addSong: (song) => {
         set((state) => {
-          const newQueue = [...state.queue]
-          const [removed] = newQueue.splice(fromIndex, 1)
-          newQueue.splice(toIndex, 0, removed)
-          return { queue: newQueue }
+          const newSongs = [...state.songs, song]
+          if (state.sortMode === 'highest_first') {
+            newSongs.sort((a, b) => b.donationAmount - a.donationAmount)
+          } else {
+            newSongs.sort((a, b) => a.position - b.position)
+          }
+          return { songs: newSongs }
+        })
+      },
+
+      removeSong: (id) => {
+        set((state) => ({
+          songs: state.songs.filter((song) => song.id !== id),
+        }))
+      },
+
+      reorderSongs: (fromIndex, toIndex) => {
+        set((state) => {
+          const newSongs = [...state.songs]
+          const [removed] = newSongs.splice(fromIndex, 1)
+          newSongs.splice(toIndex, 0, removed)
+          return { songs: newSongs }
+        })
+      },
+
+      playNext: (id) => {
+        set((state) => {
+          const songIndex = state.songs.findIndex((s) => s.id === id)
+          if (songIndex === -1) return state
+          
+          const [song] = state.songs.splice(songIndex, 1)
+          state.songs.unshift(song)
+          return { songs: state.songs }
         })
       },
 
       clearQueue: () => {
-        set({ queue: [] })
+        set({ songs: [] })
       },
 
-      updateQueueStatus: (id, status) => {
-        set((state) => ({
-          queue: state.queue.map((item) => (item.id === id ? { ...item, status } : item)),
-        }))
-      },
-
-      sortQueue: (sortBy) => {
+      setSortMode: (mode) => {
         set((state) => {
-          const sortedQueue = [...state.queue].sort((a, b) => {
-            if (sortBy === 'highest_first') {
-              return b.amount - a.amount
-            }
-            // Default FIFO
-            return new Date(a.requestedAt).getTime() - new Date(b.requestedAt).getTime()
-          })
-          return { queue: sortedQueue }
+          const newSongs = [...state.songs]
+          if (mode === 'highest_first') {
+            newSongs.sort((a, b) => b.donationAmount - a.donationAmount)
+          } else {
+            newSongs.sort((a, b) => a.position - b.position)
+          }
+          return { songs: newSongs, sortMode: mode }
         })
       },
 
-      playNext: () => {
-        const { queue } = get()
-        if (queue.length === 0) return null
-
-        const nextItem = queue[0]
-        set((state) => ({
-          queue: state.queue.slice(1),
-        }))
-
-        return nextItem
+      setSongs: (songs) => {
+        set({ songs })
       },
     }),
     {

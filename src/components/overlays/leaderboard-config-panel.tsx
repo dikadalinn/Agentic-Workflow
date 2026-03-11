@@ -11,15 +11,18 @@ interface LeaderboardConfigPanelProps {
 }
 
 export function LeaderboardConfigPanel({ settings, onUpdate }: LeaderboardConfigPanelProps) {
-  const leaderboardConfig = settings.config?.leaderboardConfig
+  const leaderboardConfig = settings.config?.leaderboardConfig || {
+    maxDonors: 5,
+    showAmount: true,
+  }
 
   const handleMaxDonorsChange = (value: string) => {
     onUpdate({
       config: {
         ...settings.config,
         leaderboardConfig: {
-          ...leaderboardConfig,
           maxDonors: Number(value) as 3 | 5 | 10,
+          showAmount: leaderboardConfig.showAmount,
         },
       },
     })
@@ -30,7 +33,7 @@ export function LeaderboardConfigPanel({ settings, onUpdate }: LeaderboardConfig
       config: {
         ...settings.config,
         leaderboardConfig: {
-          ...leaderboardConfig,
+          maxDonors: leaderboardConfig.maxDonors,
           showAmount: checked,
         },
       },

@@ -4,25 +4,44 @@ import { motion, AnimatePresence } from 'framer-motion'
 import type { OverlaySettings } from '@/types/overlay'
 import { Trophy, Award, Medal } from 'lucide-react'
 
+interface Donor {
+  name: string
+  totalAmount: number
+  donationCount?: number
+}
+
 interface LeaderboardOverlayProps {
   settings: OverlaySettings
   isPreview?: boolean
+  /** Donor data (from BroadcastChannel or mock) */
+  donors?: Donor[]
 }
 
-export function LeaderboardOverlay({ settings, isPreview = false }: LeaderboardOverlayProps) {
+export function LeaderboardOverlay({
+  settings,
+  isPreview = false,
+  donors: propDonors,
+}: LeaderboardOverlayProps) {
   const leaderboardConfig = settings.config?.leaderboardConfig
   const theme = settings.theme
 
   if (!leaderboardConfig) return null
 
-  // Mock leaderboard data
-  const donors = [
-    { rank: 1, name: 'MusicFan42', amount: 157.5, avatar: null },
-    { rank: 2, name: 'StreamLover', amount: 125.0, avatar: null },
-    { rank: 3, name: 'GamingKing', amount: 98.5, avatar: null },
-    { rank: 4, name: 'MelodyMaster', amount: 75.0, avatar: null },
-    { rank: 5, name: 'BeatDrop', amount: 62.5, avatar: null },
-  ].slice(0, leaderboardConfig.maxDonors)
+  // Use prop donors if provided, otherwise use mock data
+  const defaultDonors: Donor[] = [
+    { name: 'MusicFan42', totalAmount: 157.5, donationCount: 12 },
+    { name: 'StreamLover', totalAmount: 125.0, donationCount: 8 },
+    { name: 'GamingKing', totalAmount: 98.5, donationCount: 5 },
+    { name: 'MelodyMaster', totalAmount: 75.0, donationCount: 3 },
+    { name: 'BeatDrop', totalAmount: 62.5, donationCount: 2 },
+  ]
+
+  const donorsToDisplay = (propDonors ?? defaultDonors)
+    .slice(0, leaderboardConfig.maxDonors)
+    .map((donor, index) => ({
+      ...donor,
+      rank: index + 1,
+    }))
 
   const getThemeStyles = () => {
     switch (theme) {
@@ -46,7 +65,11 @@ export function LeaderboardOverlay({ settings, isPreview = false }: LeaderboardO
       case 3:
         return <Award className="w-5 h-5 text-orange-600" fill="currentColor" />
       default:
-        return <span className="w-5 h-5 flex items-center justify-center text-white/50 text-sm font-bold">{rank}</span>
+        return (
+          <span className="w-5 h-5 flex items-center justify-center text-white/50 text-sm font-bold">
+            {rank}
+          </span>
+        )
     }
   }
 
@@ -74,9 +97,9 @@ export function LeaderboardOverlay({ settings, isPreview = false }: LeaderboardO
       {/* Donors List */}
       <div className="space-y-2">
         <AnimatePresence mode="popLayout">
-          {donors.map((donor, index) => (
+          {donorsToDisplay.map((donor, index) => (
             <motion.div
-              key={donor.rank}
+              key={donor.name}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
@@ -95,16 +118,14 @@ export function LeaderboardOverlay({ settings, isPreview = false }: LeaderboardO
 
               {/* Name */}
               <div className="flex-1 min-w-0">
-                <p className="text-white font-semibold text-sm truncate">
-                  {donor.name}
-                </p>
+                <p className="text-white font-semibold text-sm truncate">{donor.name}</p>
               </div>
 
               {/* Amount */}
               {leaderboardConfig.showAmount && (
                 <div className="flex-shrink-0">
                   <p className="text-primary-orange font-bold text-lg">
-                    ${donor.amount.toFixed(2)}
+                    ${donor.totalAmount.toFixed(2)}
                   </p>
                 </div>
               )}
@@ -115,9 +136,7 @@ export function LeaderboardOverlay({ settings, isPreview = false }: LeaderboardO
 
       {/* Footer */}
       <div className="mt-4 pt-3 border-t border-white/10 text-center">
-        <p className="text-white/50 text-xs">
-          Donate to get on the leaderboard!
-        </p>
+        <p className="text-white/50 text-xs">Donate to get on the leaderboard!</p>
       </div>
     </div>
   )

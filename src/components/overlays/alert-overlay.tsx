@@ -8,9 +8,22 @@ interface AlertOverlayProps {
   settings: OverlaySettings
   isTriggered: boolean
   isPreview?: boolean
+  /** Name of the donor (from BroadcastChannel or mock) */
+  donorName?: string
+  /** Donation amount (from BroadcastChannel or mock) */
+  amount?: number
+  /** Optional message from donor (from BroadcastChannel or mock) */
+  message?: string
 }
 
-export function AlertOverlay({ settings, isTriggered, isPreview = false }: AlertOverlayProps) {
+export function AlertOverlay({
+  settings,
+  isTriggered,
+  isPreview = false,
+  donorName = 'MusicFan42',
+  amount = 5.0,
+  message: customDonorMessage,
+}: AlertOverlayProps) {
   const alertConfig = settings.config?.alertConfig
   const theme = settings.theme
 
@@ -69,10 +82,10 @@ export function AlertOverlay({ settings, isTriggered, isPreview = false }: Alert
     }
   }
 
-  const getMessage = () => {
+  const getThankYouMessage = () => {
     const defaultMessage = 'Thank you for the donation, {username}!'
-    const customMessage = alertConfig.customMessage || defaultMessage
-    return customMessage.replace('{username}', 'MusicFan42')
+    const templateMessage = alertConfig.customMessage || defaultMessage
+    return templateMessage.replace('{username}', donorName)
   }
 
   // Empty state for preview
@@ -103,9 +116,7 @@ export function AlertOverlay({ settings, isTriggered, isPreview = false }: Alert
               >
                 <div
                   className={`w-16 h-16 rounded-full flex items-center justify-center ${
-                    theme === 'minimal'
-                      ? 'bg-white/10'
-                      : 'bg-white/20'
+                    theme === 'minimal' ? 'bg-white/10' : 'bg-white/20'
                   }`}
                 >
                   <Music className="w-8 h-8 text-white" />
@@ -117,11 +128,12 @@ export function AlertOverlay({ settings, isTriggered, isPreview = false }: Alert
             <div className="flex-1 text-white">
               <h3 className="text-xl font-bold mb-1">New Donation!</h3>
               <p className="text-lg mb-1">
-                <span className="text-primary-orange font-bold">$5.00</span>
+                <span className="text-primary-orange font-bold">${amount.toFixed(2)}</span>
               </p>
-              <p className="text-sm opacity-90">
-                {getMessage()}
-              </p>
+              <p className="text-sm opacity-90">{getThankYouMessage()}</p>
+              {customDonorMessage && (
+                <p className="text-sm opacity-75 mt-2 italic">&quot;{customDonorMessage}&quot;</p>
+              )}
               {alertConfig.soundEnabled && (
                 <div className="mt-2 flex items-center gap-1 text-xs opacity-70">
                   <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />

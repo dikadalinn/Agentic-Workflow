@@ -1,4 +1,4 @@
-export type { Song, QueueItem, PlayerState, PlayerActions, PlayerStore } from './player'
+export type { Song, QueueItem, PlayerState, PlayerActions, PlayerStore, QueuedSong } from './player'
 export type { User, AuthState, AuthActions, AuthStore, StreamingPlatform } from './auth'
 export type {
   DonationSettings,

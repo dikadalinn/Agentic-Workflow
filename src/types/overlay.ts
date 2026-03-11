@@ -63,3 +63,8 @@ export interface OverlayActions {
 }
 
 export type OverlayStore = OverlayState & OverlayActions
+
+// Additional store functions (not part of main store interface)
+export interface OverlayStoreHelpers {
+  initializeSettings: (streamerId: string) => void
+}

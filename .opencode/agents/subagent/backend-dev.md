@@ -5,9 +5,11 @@ model: zai-coding-plan/glm-4.7
 temperature: 0.1
 skills:
   - go-toolkit-architecture
+  - go-conventions
   - dynamic-api-patterns
   - nodejs-backend-patterns
   - supabase-postgres-best-practices
+  - redis-development
   - executing-plans
   - systematic-debugging
   - verification-before-completion
@@ -29,9 +31,11 @@ permissions:
     "context7": allow
   skills:
     "go-toolkit-architecture": allow
+    "go-conventions": allow
     "dynamic-api-patterns": allow
     "nodejs-backend-patterns": allow
     "supabase-postgres-best-practices": allow
+    "redis-development": allow
     "executing-plans": allow
     "systematic-debugging": allow
     "verification-before-completion": allow

@@ -4,7 +4,22 @@ export interface Song {
   title: string
   artist: string
   thumbnailUrl: string
-  duration: number // in seconds
+  duration: number
+}
+
+export interface QueuedSong {
+  id: string
+  youtubeId: string
+  title: string
+  artist: string
+  thumbnailUrl: string
+  duration: number
+  donationId: string
+  donorName: string
+  donationAmount: number
+  message?: string
+  requestedAt: Date
+  position: number
 }
 
 export interface QueueItem {
@@ -18,15 +33,15 @@ export interface QueueItem {
 }
 
 export interface PlayerState {
-  currentSong: Song | null
   isPlaying: boolean
   volume: number
   currentTime: number
   duration: number
+  currentSong: QueuedSong | null
 }
 
 export interface PlayerActions {
-  playSong: (song: Song) => void
+  playSong: (song: Song | QueuedSong) => void
   pauseSong: () => void
   resumeSong: () => void
   stopSong: () => void
@@ -34,6 +49,11 @@ export interface PlayerActions {
   seekTo: (time: number) => void
   updateCurrentTime: (time: number) => void
   updateDuration: (duration: number) => void
+  play: () => void
+  pause: () => void
+  skip: () => void
+  setCurrentTime: (time: number) => void
+  setCurrentSong: (song: QueuedSong | null) => void
 }
 
 export type PlayerStore = PlayerState & PlayerActions

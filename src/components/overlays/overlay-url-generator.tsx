@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Copy, Check, ExternalLink } from 'lucide-react'
-import { toast } from '@/hooks/use-toast'
+import { useToast } from '@/hooks/use-toast'
 
 interface OverlayURLGeneratorProps {
   type: 'alert' | 'player' | 'leaderboard'
@@ -14,6 +14,7 @@ interface OverlayURLGeneratorProps {
 
 export function OverlayURLGenerator({ type, streamerId }: OverlayURLGeneratorProps) {
   const [copied, setCopied] = useState(false)
+  const { toast } = useToast()
 
   const getOverlayUrl = () => {
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'
@@ -25,10 +26,17 @@ export function OverlayURLGenerator({ type, streamerId }: OverlayURLGeneratorPro
     try {
       await navigator.clipboard.writeText(url)
       setCopied(true)
-      toast.success('URL copied to clipboard!')
+      toast({
+        title: 'Success',
+        description: 'URL copied to clipboard!',
+      })
       setTimeout(() => setCopied(false), 2000)
     } catch (err) {
-      toast.error('Failed to copy URL')
+      toast({
+        title: 'Error',
+        description: 'Failed to copy URL',
+        variant: 'destructive',
+      })
     }
   }
 

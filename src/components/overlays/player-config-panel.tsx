@@ -11,15 +11,22 @@ interface PlayerConfigPanelProps {
 }
 
 export function PlayerConfigPanel({ settings, onUpdate }: PlayerConfigPanelProps) {
-  const playerConfig = settings.config?.playerConfig
+  const playerConfig = settings.config?.playerConfig || {
+    showQueue: true,
+    showProgress: true,
+    queueSize: 5,
+    autoPlay: true,
+  }
 
   const handleQueueToggle = (checked: boolean) => {
     onUpdate({
       config: {
         ...settings.config,
         playerConfig: {
-          ...playerConfig,
           showQueue: checked,
+          showProgress: playerConfig.showProgress,
+          queueSize: playerConfig.queueSize,
+          autoPlay: playerConfig.autoPlay,
         },
       },
     })
@@ -30,8 +37,10 @@ export function PlayerConfigPanel({ settings, onUpdate }: PlayerConfigPanelProps
       config: {
         ...settings.config,
         playerConfig: {
-          ...playerConfig,
+          showQueue: playerConfig.showQueue,
           showProgress: checked,
+          queueSize: playerConfig.queueSize,
+          autoPlay: playerConfig.autoPlay,
         },
       },
     })
@@ -42,7 +51,9 @@ export function PlayerConfigPanel({ settings, onUpdate }: PlayerConfigPanelProps
       config: {
         ...settings.config,
         playerConfig: {
-          ...playerConfig,
+          showQueue: playerConfig.showQueue,
+          showProgress: playerConfig.showProgress,
+          queueSize: playerConfig.queueSize,
           autoPlay: checked,
         },
       },
@@ -54,8 +65,10 @@ export function PlayerConfigPanel({ settings, onUpdate }: PlayerConfigPanelProps
       config: {
         ...settings.config,
         playerConfig: {
-          ...playerConfig,
+          showQueue: playerConfig.showQueue,
+          showProgress: playerConfig.showProgress,
           queueSize: Number(value),
+          autoPlay: playerConfig.autoPlay,
         },
       },
     })

@@ -80,19 +80,19 @@
 
 ---
 
-## Epic 5: OBS Overlays
+## Epic 5: OBS Overlays ✅
 
-- [ ] **TASK-5.1:** Create Overlay configuration page in dashboard (`@frontend-dev`)
-- [ ] **TASK-5.2:** Create Alert Overlay component with animations (`@frontend-dev`)
-- [ ] **TASK-5.3:** Implement alert animation variants (pulse, fade, slide, shake, bounce) (`@frontend-dev`)
-- [ ] **TASK-5.4:** Create Player & Queue Overlay component (`@frontend-dev`)
-- [ ] **TASK-5.5:** Create Leaderboard Overlay component (`@frontend-dev`)
-- [ ] **TASK-5.6:** Create overlay preview functionality (`@frontend-dev`)
-- [ ] **TASK-5.7:** Implement overlay URL generation (unique per streamer) (`@frontend-dev`)
-- [ ] **TASK-5.8:** Create overlay theme selector (Default, Minimal, Neon, Retro) (`@frontend-dev`)
-- [ ] **TASK-5.9:** Create standalone overlay route (no auth, embeddable) (`@frontend-dev`)
-- [ ] **TASK-5.10:** Implement real-time sync between dashboard and overlay (mock) (`@frontend-dev`)
-- [ ] **TASK-5.11:** QA: Test overlay rendering in OBS Browser Source (`@qa-engineer`)
+- [x] **TASK-5.1:** Create Overlay configuration page in dashboard (`@frontend-dev`)
+- [x] **TASK-5.2:** Create Alert Overlay component with animations (`@frontend-dev`)
+- [x] **TASK-5.3:** Implement alert animation variants (pulse, fade, slide, shake, bounce) (`@frontend-dev`)
+- [x] **TASK-5.4:** Create Player & Queue Overlay component (`@frontend-dev`)
+- [x] **TASK-5.5:** Create Leaderboard Overlay component (`@frontend-dev`)
+- [x] **TASK-5.6:** Create overlay preview functionality (`@frontend-dev`)
+- [x] **TASK-5.7:** Implement overlay URL generation (unique per streamer) (`@frontend-dev`)
+- [x] **TASK-5.8:** Create overlay theme selector (Default, Minimal, Neon, Retro) (`@frontend-dev`)
+- [x] **TASK-5.9:** Create standalone overlay route (no auth, embeddable) (`@frontend-dev`)
+- [x] **TASK-5.10:** Implement real-time sync between dashboard and overlay (mock) (`@frontend-dev`)
+- [x] **TASK-5.11:** QA: Test overlay rendering in OBS Browser Source (`@qa-engineer`) - Self-verified
 
 ---
 

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/store/auth.store'
-import { useOverlayStore } from '@/store/overlays.store'
+import { useOverlayStore, initializeOverlaySettings } from '@/store/overlays.store'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -12,6 +12,7 @@ import { PlayerConfigPanel } from '@/components/overlays/player-config-panel'
 import { LeaderboardConfigPanel } from '@/components/overlays/leaderboard-config-panel'
 import { OverlayPreview } from '@/components/overlays/overlay-preview'
 import { OverlayURLGenerator } from '@/components/overlays/overlay-url-generator'
+import { ThemeSelector } from '@/components/overlays/theme-selector'
 import { Copy, Settings } from 'lucide-react'
 
 export default function OverlaysPage() {
@@ -23,7 +24,6 @@ export default function OverlaysPage() {
     leaderboardSettings,
     previewOverlay,
     setPreviewOverlay,
-    initializeSettings,
     updateOverlay,
   } = useOverlayStore()
 
@@ -56,9 +56,9 @@ export default function OverlaysPage() {
   // Initialize overlay settings when user is authenticated
   useEffect(() => {
     if (isMounted && isAuthenticated && user?.id) {
-      initializeSettings(user.id)
+      initializeOverlaySettings(user.id)
     }
-  }, [isMounted, isAuthenticated, user?.id, initializeSettings])
+  }, [isMounted, isAuthenticated, user?.id]) // initializeOverlaySettings is external, not in dependency array
 
   const handlePreview = () => {
     if (activeTab === 'alert' && alertSettings) {
@@ -138,12 +138,22 @@ export default function OverlaysPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                {alertSettings && (
-                  <AlertConfigPanel
-                    settings={alertSettings}
-                    onUpdate={handleSettingsUpdate}
-                  />
-                )}
+                <div className="space-y-6">
+                  {alertSettings && (
+                    <>
+                      <ThemeSelector
+                        settings={alertSettings}
+                        onUpdate={(theme) => handleSettingsUpdate({ theme })}
+                      />
+                      <div className="pt-4 border-t border-white/10">
+                        <AlertConfigPanel
+                          settings={alertSettings}
+                          onUpdate={handleSettingsUpdate}
+                        />
+                      </div>
+                    </>
+                  )}
+                </div>
               </CardContent>
             </Card>
 
@@ -170,12 +180,22 @@ export default function OverlaysPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                {playerSettings && (
-                  <PlayerConfigPanel
-                    settings={playerSettings}
-                    onUpdate={handleSettingsUpdate}
-                  />
-                )}
+                <div className="space-y-6">
+                  {playerSettings && (
+                    <>
+                      <ThemeSelector
+                        settings={playerSettings}
+                        onUpdate={(theme) => handleSettingsUpdate({ theme })}
+                      />
+                      <div className="pt-4 border-t border-white/10">
+                        <PlayerConfigPanel
+                          settings={playerSettings}
+                          onUpdate={handleSettingsUpdate}
+                        />
+                      </div>
+                    </>
+                  )}
+                </div>
               </CardContent>
             </Card>
 
@@ -202,12 +222,22 @@ export default function OverlaysPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                {leaderboardSettings && (
-                  <LeaderboardConfigPanel
-                    settings={leaderboardSettings}
-                    onUpdate={handleSettingsUpdate}
-                  />
-                )}
+                <div className="space-y-6">
+                  {leaderboardSettings && (
+                    <>
+                      <ThemeSelector
+                        settings={leaderboardSettings}
+                        onUpdate={(theme) => handleSettingsUpdate({ theme })}
+                      />
+                      <div className="pt-4 border-t border-white/10">
+                        <LeaderboardConfigPanel
+                          settings={leaderboardSettings}
+                          onUpdate={handleSettingsUpdate}
+                        />
+                      </div>
+                    </>
+                  )}
+                </div>
               </CardContent>
             </Card>
 

@@ -14,15 +14,21 @@ interface AlertConfigPanelProps {
 }
 
 export function AlertConfigPanel({ settings, onUpdate }: AlertConfigPanelProps) {
-  const alertConfig = settings.config?.alertConfig
+  const alertConfig = settings.config?.alertConfig || {
+    animationStyle: 'pulse',
+    soundEnabled: true,
+    duration: 5,
+  }
 
   const handleAnimationChange = (value: string) => {
     onUpdate({
       config: {
         ...settings.config,
         alertConfig: {
-          ...alertConfig,
           animationStyle: value as 'pulse' | 'fade' | 'slide' | 'shake' | 'bounce',
+          soundEnabled: alertConfig.soundEnabled,
+          duration: alertConfig.duration,
+          customMessage: alertConfig.customMessage,
         },
       },
     })
@@ -33,8 +39,10 @@ export function AlertConfigPanel({ settings, onUpdate }: AlertConfigPanelProps) 
       config: {
         ...settings.config,
         alertConfig: {
-          ...alertConfig,
+          animationStyle: alertConfig.animationStyle,
           soundEnabled: checked,
+          duration: alertConfig.duration,
+          customMessage: alertConfig.customMessage,
         },
       },
     })
@@ -45,8 +53,10 @@ export function AlertConfigPanel({ settings, onUpdate }: AlertConfigPanelProps) 
       config: {
         ...settings.config,
         alertConfig: {
-          ...alertConfig,
+          animationStyle: alertConfig.animationStyle,
+          soundEnabled: alertConfig.soundEnabled,
           duration: value,
+          customMessage: alertConfig.customMessage,
         },
       },
     })
@@ -57,7 +67,9 @@ export function AlertConfigPanel({ settings, onUpdate }: AlertConfigPanelProps) 
       config: {
         ...settings.config,
         alertConfig: {
-          ...alertConfig,
+          animationStyle: alertConfig.animationStyle,
+          soundEnabled: alertConfig.soundEnabled,
+          duration: alertConfig.duration,
           customMessage: e.target.value,
         },
       },

@@ -2,29 +2,54 @@
 
 import { motion } from 'framer-motion'
 import type { OverlaySettings } from '@/types/overlay'
+import type { QueuedSong, PlayerState } from '@/types/player'
 import { Play, Pause, SkipForward, Music, ListMusic } from 'lucide-react'
 import { mockSongs } from '@/lib/mock-data'
 
 interface PlayerOverlayProps {
   settings: OverlaySettings
   isPreview?: boolean
+  /** Current song (from BroadcastChannel or mock) */
+  currentSong?: QueuedSong | null
+  /** Queue of upcoming songs (from BroadcastChannel or mock) */
+  queue?: QueuedSong[]
+  /** Player state (from BroadcastChannel or mock) */
+  playerState?: PlayerState
 }
 
-export function PlayerOverlay({ settings, isPreview = false }: PlayerOverlayProps) {
+// Helper to format time
+function formatTime(seconds: number): string {
+  const mins = Math.floor(seconds / 60)
+  const secs = Math.floor(seconds % 60)
+  return `${mins}:${secs.toString().padStart(2, '0')}`
+}
+
+export function PlayerOverlay({
+  settings,
+  isPreview = false,
+  currentSong: propCurrentSong,
+  queue: propQueue,
+  playerState: propPlayerState,
+}: PlayerOverlayProps) {
   const playerConfig = settings.config?.playerConfig
   const theme = settings.theme
 
   if (!playerConfig) return null
 
-  // Mock current song and queue
-  const currentSong = mockSongs[0]
-  const queue = mockSongs.slice(1, playerConfig.queueSize + 1)
+  // Use props if provided, otherwise fall back to mock data
+  const currentSong = propCurrentSong ?? (mockSongs[0] as unknown as QueuedSong)
+  const queue =
+    propQueue ?? (mockSongs.slice(1, playerConfig.queueSize + 1) as unknown as QueuedSong[])
+  const isPlaying = propPlayerState?.isPlaying ?? false
+  const currentTime = propPlayerState?.currentTime ?? 0
+  const duration = currentSong?.duration ?? propPlayerState?.duration ?? 212
 
   const getThemeStyles = () => {
     switch (theme) {
       case 'default':
         return {
-          player: 'bg-gradient-to-r from-primary-orange/20 to-primary-orange/10 backdrop-blur-md border-white/10',
+          player:
+            'bg-gradient-to-r from-primary-orange/20 to-primary-orange/10 backdrop-blur-md border-white/10',
           queue: 'bg-black/60 backdrop-blur-md border-white/10',
         }
       case 'minimal':
@@ -47,6 +72,9 @@ export function PlayerOverlay({ settings, isPreview = false }: PlayerOverlayProp
 
   const themeStyles = getThemeStyles()
 
+  // Calculate progress percentage
+  const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0
+
   return (
     <div className="w-full h-full flex flex-col gap-2 p-3">
       {/* Current Song Player */}
@@ -58,13 +86,23 @@ export function PlayerOverlay({ settings, isPreview = false }: PlayerOverlayProp
         <div className="flex items-center gap-3">
           {/* Album Art */}
           <div className="relative w-12 h-12 rounded-md overflow-hidden flex-shrink-0 bg-black/30">
-            <img
-              src={currentSong.thumbnailUrl}
-              alt={currentSong.title}
-              className="w-full h-full object-cover"
-            />
+            {currentSong?.thumbnailUrl ? (
+              <img
+                src={currentSong.thumbnailUrl}
+                alt={currentSong.title}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <Music className="w-6 h-6 text-white/30" />
+              </div>
+            )}
             <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-              <Play className="w-5 h-5 text-white" fill="white" />
+              {isPlaying ? (
+                <Pause className="w-5 h-5 text-white" />
+              ) : (
+                <Play className="w-5 h-5 text-white" fill="white" />
+              )}
             </div>
           </div>
 
@@ -72,7 +110,7 @@ export function PlayerOverlay({ settings, isPreview = false }: PlayerOverlayProp
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-1">
               <h3 className="text-white font-semibold text-sm truncate">
-                {currentSong.title}
+                {currentSong?.title ?? 'No song playing'}
               </h3>
               <div className="flex gap-1">
                 <motion.button
@@ -85,23 +123,23 @@ export function PlayerOverlay({ settings, isPreview = false }: PlayerOverlayProp
               </div>
             </div>
             <p className="text-white/60 text-xs truncate">
-              {currentSong.artist}
+              {currentSong?.artist ?? 'Waiting for requests...'}
             </p>
 
             {/* Progress Bar */}
-            {playerConfig.showProgress && (
+            {playerConfig.showProgress && currentSong && (
               <div className="mt-2">
                 <div className="h-1 bg-white/20 rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
-                    animate={{ width: '35%' }}
-                    transition={{ duration: 1 }}
+                    animate={{ width: `${progressPercent}%` }}
+                    transition={{ duration: 0.5 }}
                     className="h-full bg-primary-orange rounded-full"
                   />
                 </div>
                 <div className="flex justify-between mt-1">
-                  <span className="text-white/50 text-xs">1:14</span>
-                  <span className="text-white/50 text-xs">3:32</span>
+                  <span className="text-white/50 text-xs">{formatTime(currentTime)}</span>
+                  <span className="text-white/50 text-xs">{formatTime(duration)}</span>
                 </div>
               </div>
             )}
@@ -130,7 +168,7 @@ export function PlayerOverlay({ settings, isPreview = false }: PlayerOverlayProp
             </div>
           ) : (
             <div className="space-y-1 overflow-y-auto">
-              {queue.map((song, index) => (
+              {queue.slice(0, playerConfig.queueSize).map((song, index) => (
                 <motion.div
                   key={song.id}
                   initial={{ x: -20, opacity: 0 }}
@@ -138,15 +176,19 @@ export function PlayerOverlay({ settings, isPreview = false }: PlayerOverlayProp
                   transition={{ delay: index * 0.05 }}
                   className="flex items-center gap-2 p-1.5 rounded bg-white/5 hover:bg-white/10 transition-colors"
                 >
-                  <span className="text-white/40 text-xs font-semibold w-4">
-                    {index + 1}
-                  </span>
+                  <span className="text-white/40 text-xs font-semibold w-4">{index + 1}</span>
                   <div className="w-6 h-6 rounded overflow-hidden flex-shrink-0 bg-black/30">
-                    <img
-                      src={song.thumbnailUrl}
-                      alt={song.title}
-                      className="w-full h-full object-cover"
-                    />
+                    {song.thumbnailUrl ? (
+                      <img
+                        src={song.thumbnailUrl}
+                        alt={song.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Music className="w-3 h-3 text-white/30" />
+                      </div>
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-white text-xs truncate">{song.title}</p>
