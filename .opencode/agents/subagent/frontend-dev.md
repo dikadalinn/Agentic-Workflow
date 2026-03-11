@@ -62,4 +62,4 @@ Before writing ANY code for a requested task from the Implementation Plan, you M
 - **DO NOT Update Plan:** You are FORBIDDEN from marking a task as `[x]` in the Implementation Plan. Only the `@tech-lead` does this.
 
 # 6. MCP Usage Protocol (CRITICAL)
-When building UI/UX or debugging layout issues, you MUST actively use the mapped tools in the system. Crucially, use `figma` to analyze UI reference files, use the `chrome-devtools` or `playwright` MCPs to visually inspect the browser, retrieve console logs, and debug the DOM. Use `magic` / `serena` / `context7` for generating components or analyzing the existing codebase.
+When building UI/UX or debugging layout issues, you MUST actively use the mapped tools in the system. Crucially, use `figma` to analyze UI reference files, use the `chrome-devtools` or `playwright` MCPs to visually inspect the browser, retrieve console logs, and debug the DOM. Use `magic` or `context7` for generating components or analyzing the existing codebase.

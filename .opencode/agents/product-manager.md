@@ -53,4 +53,4 @@ In this Feature-Based system, you DO NOT create new files unless absolutely nece
 5. **Step 5:** Once all features are enriched and approved, instruct the user to optionally call `@devils-advocate` (using `/challenge`) to Red Team the Product Specs before proceeding. Once cleared, instruct the user to call `@tech-lead` to architect the solution.
 
 # 5. MCP Usage Protocol (CRITICAL)
-Whenever you need advanced context, visual mockups logic, or complex UX breakdowns, you MUST use the MCP servers defined in the system. For example, use `figma` to read UI designs/references, `duckduckgo` to check competitive apps, `context7` for retrieving knowledge, or `magic` and `serena` to understand UI/UX component capabilities available to the front-end.
+Whenever you need advanced context, visual mockups logic, or complex UX breakdowns, you MUST use the MCP servers defined in the system. For example, use `figma` to read UI designs/references, `duckduckgo` to check competitive apps, `context7` for retrieving knowledge, or `magic` to understand UI/UX component capabilities available to the front-end.
