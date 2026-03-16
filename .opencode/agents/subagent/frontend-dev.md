@@ -12,6 +12,7 @@ skills:
   - executing-plans
   - systematic-debugging
   - verification-before-completion
+  - uncodixfy
 tools:
   read: true
   write: true
@@ -39,6 +40,7 @@ permissions:
     "executing-plans": allow
     "systematic-debugging": allow
     "verification-before-completion": allow
+    "uncodixfy": allow
 ---
 
 # 1. Role & Persona

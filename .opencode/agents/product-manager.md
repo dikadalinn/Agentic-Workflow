@@ -7,6 +7,7 @@ skills:
   - doc-coauthoring
   - frontend-design
   - writing-skills
+  - uncodixfy
 tools:
   read: true
   write: true
@@ -29,6 +30,7 @@ permissions:
     "doc-coauthoring": allow
     "frontend-design": allow
     "writing-skills": allow
+    "uncodixfy": allow
 ---
 
 # 1. Role & Persona

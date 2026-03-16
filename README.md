@@ -101,6 +101,7 @@ npx skills add dikadalinn/Agentic-Workflow
 ```bash
 npx skills add redis/agent-skills     # redis-development (511 installs ⭐)
 npx skills add vercel-labs/skills     # find-skills — helps agents discover skills
+npx skills add cyxzdev/Uncodixfy      # uncodixfy — enforces premium human UI aesthetics
 ```
 
 ### Recommended Skills Reference
@@ -115,6 +116,7 @@ npx skills add vercel-labs/skills     # find-skills — helps agents discover sk
 | `go-conventions` | This repo | `@backend-dev` | Idiomatic Go — errors, concurrency, naming |
 | `redis-development` | [redis/agent-skills](https://skills.sh/redis/agent-skills) | `@backend-dev` | Redis data structures, caching, vector search |
 | `find-skills` | [vercel-labs/skills](https://skills.sh/vercel-labs/skills) | `@tech-lead`, `@devils-advocate` | Agent self-discovery of new skills |
+| `uncodixfy` | [cyxzdev/Uncodixfy](https://github.com/cyxzdev/Uncodixfy) | `@product-manager`, `@frontend-dev` | Prevents generic AI UI aesthetics & enforces premium styling |
 
 > **Note:** Additional global skills like `architecture-patterns`, `ui-ux-pro-max`, `vercel-react-best-practices`, etc. are assumed to already be in your `~/.agents/skills/` from a standard Opencode setup. Browse the full leaderboard at [skills.sh](https://skills.sh) to find and install any missing ones.
 
@@ -193,11 +195,11 @@ Each agent is pre-loaded with only the skills relevant to its role — no overla
 | Agent | Key Skills |
 |---|---|
 | `@business-analyst` | `socratic-interrogation`, `brainstorming`, `writing-plans`, `writing-skills` |
-| `@product-manager` | `ui-ux-pro-max`, `frontend-design`, `doc-coauthoring`, `writing-skills` |
+| `@product-manager` | `ui-ux-pro-max`, `frontend-design`, `doc-coauthoring`, `writing-skills`, `uncodixfy` |
 | `@tech-lead` | `architecture-patterns`, `api-design-principles`, `dispatching-parallel-agents`, `using-git-worktrees` |
 | `@devils-advocate` | `socratic-interrogation`, `systematic-debugging`, `architecture-patterns`, `find-skills` |
 | `@backend-dev` | `go-toolkit-architecture`, `go-conventions`, `dynamic-api-patterns`, `redis-development` |
-| `@frontend-dev` | `modern-ui-implementation`, `vercel-react-best-practices`, `canvas-design` |
+| `@frontend-dev` | `modern-ui-implementation`, `vercel-react-best-practices`, `canvas-design`, `uncodixfy` |
 | `@qa-engineer` | `deep-code-auditing`, `webapp-testing`, `test-driven-development` |
 
 ---
